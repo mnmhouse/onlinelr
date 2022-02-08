@@ -1,0 +1,6 @@
+org/dataclass/FTRLModelLoad.class
+org/dataclass/LogLossEvalutor.class
+org/dataclass/FTRLLocalTrain.class
+org/dataclass/FTRLProximal.class
+org/example/FTRLExample.class
+org/dataclass/FTRLParameters.class
