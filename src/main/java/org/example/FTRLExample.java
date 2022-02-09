@@ -3,7 +3,6 @@ package org.example;
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.classification.LogisticRegressionTrainBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
-import com.alibaba.alink.operator.stream.StreamOperator;
 import com.alibaba.alink.operator.stream.dataproc.JsonValueStreamOp;
 import com.alibaba.alink.operator.stream.dataproc.SplitStreamOp;
 import com.alibaba.alink.operator.stream.evaluation.EvalBinaryClassStreamOp;
@@ -20,6 +19,7 @@ import com.alibaba.alink.pipeline.feature.FeatureHasher;
 public class FTRLExample {
 
     public static void main(String[] args) throws Exception {
+
         String schemaStr
                 = "id string, click string, dt string, C1 string, banner_pos int, site_id string, site_domain string, "
                 + "site_category string, app_id string, app_domain string, app_category string, device_id string, "
@@ -28,7 +28,7 @@ public class FTRLExample {
         CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
                 .setFilePath("http://alink-release.oss-cn-beijing.aliyuncs.com/data-files/avazu-small.csv")
                 .setSchemaStr(schemaStr);
-        trainBatchData.firstN(10).print();
+
         String labelColName = "click";
         String[] selectedColNames = new String[]{
                 "C1", "banner_pos", "site_category", "app_domain",
@@ -80,7 +80,7 @@ public class FTRLExample {
         // 准备数据流数据，这里的数据源 可以设置为诸如Kafka之类的数据
         BaseSourceStreamOp  data = getSourceStreamOp(schemaStr);
 
-        // split stream to train and eval data 对于流数据源进行实时切分得到原始训练数据和原始预测数据
+        // 对于流数据源进行实时切分得到训练数据和预测数据
         SplitStreamOp splitter = new SplitStreamOp().setFraction(0.5).linkFrom(data);
 
         // ftrl train 在初始模型基础上进行FTRL在线训练
@@ -127,8 +127,8 @@ public class FTRLExample {
     private static BaseSourceStreamOp<CsvSourceStreamOp> getSourceStreamOp(String schemaStr) {
         // 准备数据流数据，这里的数据可以设置为诸如Kafka 流式数据
         CsvSourceStreamOp data = new CsvSourceStreamOp()
-                //.setFilePath("http://alink-release.oss-cn-beijing.aliyuncs.com/data-files/avazu-ctr-train-8M.csv")
-                .setFilePath("/Users/haozhang/Downloads/avazu-ctr-train-8M.csv")
+                .setFilePath("http://alink-release.oss-cn-beijing.aliyuncs.com/data-files/avazu-ctr-train-8M.csv")
+               // .setFilePath("/Users/haozhang/Downloads/avazu-ctr-train-8M.csv")
                 .setSchemaStr(schemaStr)
                 .setIgnoreFirstLine(true);
         return data;
